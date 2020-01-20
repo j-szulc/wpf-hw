@@ -22,14 +22,6 @@ let reachable a =
 	|| ((Array.fold_left (fun acc (x,y) -> if (y=x || y=0) then true else acc) false a)
 	&&  (Array.fold_left (fun acc y   -> if (y mod gcd_ = 0) then acc else false) true a_goal))
 
-let rec print_list f l = ()
-	(*match l with
-	| [] -> print_string "\n"
-	| h::t -> f h ; print_string " " ; print_list f t *)
-
-let print_array f a = ()
-	(*print_list f (Array.to_list a)*)
-
 let przelewanka a =
 	try
 		let n = Array.length a
