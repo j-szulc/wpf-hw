@@ -1,6 +1,6 @@
 (* Author: Jakub Szulc *)
 
-exception Found of int
+(*exception Found of int*)
 
 (* Create a copy of [s] with [s.(i)] entry changed to [x] *)
 let (<--) s (i,x) = 
@@ -29,7 +29,6 @@ let reachable a =
 
 
 let przelewanka a =
-    try
         let n = Array.length a
         in let a_capacity = Array.map fst a
         in let a_goal = Array.map snd a
@@ -39,7 +38,7 @@ let przelewanka a =
             else (-1)
         in let set_visited s time =
             Hashtbl.replace visited s time;
-            if s=a_goal then raise (Found time)
+            (*if s=a_goal then raise (Found time)*)
         in let q = Queue.create ()
         in let empty = Array.make n 0
         in if (not (reachable a)) then (-1)
@@ -73,8 +72,6 @@ let przelewanka a =
             done;
             when_visited a_goal
         end
-    with 
-    | (Found time) -> time
 
 (** TESTS **)
 (*
