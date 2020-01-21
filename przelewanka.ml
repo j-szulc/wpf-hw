@@ -21,16 +21,11 @@ let reachable a =
 	(* Gcd of capacities *)
 	(* In case of n=0: gcd_=0 *)
 	in let gcd_ = Array.fold_left (fun acc x -> gcd acc x) 0 a_capacity
-	in
-		(n=0) 
-	||
-	  	(
-	  		(* At least one empty or full bucket *)
-	  		(Array.fold_left (fun acc (x,y) -> if (y=x || y=0) then true else acc) false a)
-			&&
-	  		(* Volume in each bucket divisible by gcd of capacities *)
-	  		(Array.fold_left (fun acc y -> if (y mod gcd_ = 0) then acc else false) true a_goal)
-		)
+	in 
+		(n=0) || (  (* At least one empty or full bucket *)
+	    	 		(Array.fold_left (fun acc (x,y) -> y=x || y=0 || acc) false a)
+	  	  		    (* Volume in each bucket divisible by gcd of capacities *)
+	    	 	 && (Array.fold_left (fun acc y -> (y mod gcd_ = 0) && acc) true a_goal))
 
 
 let przelewanka a =
@@ -61,19 +56,19 @@ let przelewanka a =
 							Queue.push s' q
 						end
 				in for i=0 to (n-1) do
-						(* Pour out the water from a non-empty bucket *)
-						if(s.(i)>0) then add (s <-- (i,0));
+					(* Pour out the water from a non-empty bucket *)
+					if(s.(i)>0) then add (s <-- (i,0));
 
-						(* Fill a non-full bucket *)
-						if(s.(i)<a_capacity.(i)) then add (s <-- (i,a_capacity.(i)));
-						
-						(* For each bucket [j], pour the water from [i] to [j] if [i] non-empty and [j] non-full *)
-						for j=0 to (n-1) do 
-							if (i<>j) && (s.(i)>0) && (s.(j)<a_capacity.(j)) then 
-								let new_sj = min a_capacity.(j) (s.(i)+s.(j))
-								in let new_si = s.(i) - ( new_sj - (s.(j)) )
-								in add (s <-- (i,new_si) <-- (j,new_sj))
-						done
+					(* Fill a non-full bucket *)
+					if(s.(i)<a_capacity.(i)) then add (s <-- (i,a_capacity.(i)));
+
+					(* For each bucket [j], pour the water from [i] to [j] if [i] non-empty and [j] non-full *)
+					for j=0 to (n-1) do 
+						if (i<>j) && (s.(i)>0) && (s.(j)<a_capacity.(j)) then 
+							let new_sj = min a_capacity.(j) (s.(i)+s.(j))
+							in let new_si = s.(i) - ( new_sj - (s.(j)) )
+							in add (s <-- (i,new_si) <-- (j,new_sj))
+					done
 				done
 			done;
 			when_visited a_goal
